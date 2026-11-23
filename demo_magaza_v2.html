@@ -1,0 +1,1182 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NovaStore — Demo E-Ticaret ve QA Test Platformu</title>
+  <style>
+    :root {
+      --primary: #ff6000;
+      --primary-dark: #e05200;
+      --dark: #1e293b;
+      --muted: #64748b;
+      --bg: #f4f6f9;
+      --card: #ffffff;
+      --border: #e2e8f0;
+      --success: #15803d;
+      --success-bg: #dcfce7;
+      --danger: #b91c1c;
+      --danger-bg: #fee2e2;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg);
+      color: var(--dark);
+      line-height: 1.5;
+    }
+    .hidden { display: none !important; }
+
+    /* Üst Bilgi Bandı */
+    .topbar {
+      background: #0f172a;
+      color: #cbd5e1;
+      font-size: 12px;
+      padding: 6px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .topbar strong { color: #fff; }
+
+    /* Ana Header ve Menü */
+    header {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    }
+    .header-main {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--dark);
+      text-decoration: none;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .logo span { color: var(--primary); }
+
+    .search-box {
+      flex: 1;
+      max-width: 520px;
+      display: flex;
+      border: 2px solid var(--primary);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #fff;
+    }
+    .search-box input {
+      flex: 1;
+      border: none;
+      padding: 10px 14px;
+      font-size: 14px;
+      outline: none;
+    }
+    .search-box button {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 0 18px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .search-box button:hover { background: var(--primary-dark); }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .nav-bar {
+      background: #fff;
+      border-top: 1px solid #f1f5f9;
+    }
+    .nav-inner {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+    }
+    .nav-btn {
+      background: transparent;
+      border: none;
+      border-bottom: 3px solid transparent;
+      padding: 11px 14px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #475569;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .nav-btn:hover, .nav-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    /* Konteyner ve Kartlar */
+    .container {
+      max-width: 1220px;
+      margin: 24px auto;
+      padding: 0 24px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+    }
+
+    /* Butonlar ve Mesajlar */
+    .btn {
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.15s ease;
+    }
+    .btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover:not(:disabled) { background: var(--primary-dark); }
+    .btn-secondary { background: #e2e8f0; color: var(--dark); }
+    .btn-secondary:hover:not(:disabled) { background: #cbd5e1; }
+    .btn-success { background: #16a34a; color: #fff; }
+    .btn-success:hover:not(:disabled) { background: #15803d; }
+    .btn-danger { background: #dc2626; color: #fff; }
+    .btn-sm { padding: 6px 10px; font-size: 12px; }
+
+    .alert {
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-top: 12px;
+      font-weight: 500;
+    }
+    .alert-error { background: var(--danger-bg); color: var(--danger); border: 1px solid #fecaca; }
+    .alert-success { background: var(--success-bg); color: var(--success); border: 1px solid #bbf7d0; }
+
+    /* Giriş Ekranı */
+    .login-wrapper {
+      max-width: 440px;
+      margin: 36px auto;
+    }
+    .form-group { margin-bottom: 14px; }
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #334155;
+    }
+    .form-group input, .form-group textarea, select.select-input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 14px;
+      background: #fff;
+    }
+    select.select-input {
+      width: auto;
+      padding: 6px 10px;
+      font-size: 13px;
+    }
+    .demo-hint {
+      margin-top: 14px;
+      padding: 10px 12px;
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      border-radius: 8px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* Mağaza Üst Barı ve Ürün Izgarası */
+    .store-top {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .store-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .grid-urunler {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    .urun-kart {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .urun-kart:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.07);
+    }
+    .urun-gorsel {
+      height: 150px;
+      background: linear-gradient(135deg, #f8fafc, #eef2ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid #f1f5f9;
+      padding: 12px;
+    }
+    .urun-gorsel img {
+      max-height: 112px;
+      width: auto;
+      object-fit: contain;
+    }
+    .urun-govde { padding: 16px; }
+    .urun-kategori {
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--primary);
+      letter-spacing: 0.4px;
+    }
+    .urun-baslik { font-size: 16px; font-weight: 700; margin: 4px 0; }
+    .urun-aciklama { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+    .urun-alt {
+      padding: 0 16px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .fiyat { font-size: 18px; font-weight: 800; color: var(--dark); }
+
+    /* Sepet Satırları */
+    .sepet-satir {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .sepet-urun-sol {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .sepet-mini-img {
+      width: 44px;
+      height: 44px;
+      object-fit: contain;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 4px;
+    }
+    .adet-kontrol { display: flex; align-items: center; gap: 8px; }
+    .adet-deger { min-width: 24px; text-align: center; font-weight: 700; }
+
+    .kupon-kutu {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+      max-width: 420px;
+    }
+    .kupon-kutu input {
+      flex: 1;
+      padding: 9px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+    }
+
+    .ozet-alani {
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 2px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    /* Sipariş Geçmişi */
+    .siparis-kart {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      background: #f8fafc;
+    }
+    .siparis-ust {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .rozet-basarili {
+      background: var(--success-bg);
+      color: var(--success);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+
+    /* Toast Bildirimi */
+    .toast {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      background: #0f172a;
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.22);
+      z-index: 50;
+    }
+
+    /* Adım Göstergesi */
+    .steps {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .step-pill {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      background: #e2e8f0;
+      color: #475569;
+    }
+    .step-pill.active { background: var(--primary); color: #fff; }
+    .step-pill.done { background: #dcfce7; color: #15803d; }
+
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 640px) {
+      .header-main { flex-direction: column; align-items: stretch; }
+      .row-2 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <span><strong>NovaStore</strong> • Güvenli 3D Ödeme &amp; E2E Test Ortamı • 2000 TL Üzeri Ücretsiz Kargo</span>
+    <span id="aktifKullaniciBar">Misafir Kullanıcı</span>
+  </div>
+
+  <header>
+    <div class="header-main">
+      <a href="#" class="logo" id="anaSayfaLogo">Nova<span>Store</span></a>
+
+      <div class="search-box">
+        <input type="text" id="aramaInput" placeholder="Ürün, marka veya kategori ara..." />
+        <button type="button" id="aramaBtn">Ara</button>
+      </div>
+
+      <div class="header-actions">
+        <button type="button" class="btn btn-secondary hidden" id="siparislerimBtn">
+          Siparişlerim (<span id="siparisSayaci">0</span>)
+        </button>
+        <button type="button" class="btn btn-secondary" id="sepetGitBtn">
+          Sepetim (<span id="sepetSayaci">0</span>)
+        </button>
+        <button type="button" class="btn btn-secondary hidden" id="cikisBtn">Çıkış Yap</button>
+      </div>
+    </div>
+
+    <nav class="nav-bar" aria-label="Ana Menü">
+      <div class="nav-inner">
+        <button type="button" class="nav-btn active" data-kategori="Tümü">Tüm Ürünler</button>
+        <button type="button" class="nav-btn" data-kategori="Ses & Kulaklık">Ses &amp; Kulaklık</button>
+        <button type="button" class="nav-btn" data-kategori="Çevre Birimleri">Çevre Birimleri</button>
+        <button type="button" class="nav-btn" data-kategori="Ofis & Masa">Ofis &amp; Masa</button>
+        <button type="button" class="nav-btn" data-kategori="Aksesuar">Aksesuar</button>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container">
+    <!-- 1. GİRİŞ EKRANI -->
+    <section id="loginBolumu" class="card login-wrapper">
+      <h2 style="margin-bottom: 6px;">Hesabına Giriş Yap</h2>
+      <p style="color: var(--muted); font-size: 14px; margin-bottom: 18px;">
+        Alışverişe ve test akışlarına başlamak için giriş yapın.
+      </p>
+
+      <div class="form-group">
+        <label for="username">Kullanıcı Adı</label>
+        <input type="text" id="username" placeholder="demo_kullanici" />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Şifre</label>
+        <input type="password" id="password" placeholder="••••••••" />
+      </div>
+
+      <button type="button" class="btn btn-primary" id="loginBtn" style="width: 100%;">Giriş Yap</button>
+      <div id="loginMesaj" class="alert hidden"></div>
+
+      <div class="demo-hint">
+        <strong>Demo Bilgileri:</strong> Kullanıcı: <code>demo_kullanici</code> • Şifre: <code>Test1234!</code> • Kupon: <code>INDIRIM10</code> • 3D Kod: <code>123456</code>
+      </div>
+    </section>
+
+    <!-- 2. MAĞAZA VİTRİNİ -->
+    <section id="magazaBolumu" class="hidden">
+      <div class="card store-top">
+        <div>
+          <h2 id="hosgeldinMesaji">Hoş geldiniz!</h2>
+          <p id="filtreBilgisi" style="color: var(--muted); font-size: 13px;">Gösterilen kategori: Tümü</p>
+        </div>
+        <div class="store-controls">
+          <label for="siralamaSelect" style="font-size: 13px; font-weight: 600; color: #334155;">Sırala:</label>
+          <select id="siralamaSelect" class="select-input">
+            <option value="varsayilan">Varsayılan</option>
+            <option value="fiyat-artan">Fiyat: Düşükten Yükseğe</option>
+            <option value="fiyat-azalan">Fiyat: Yüksekten Düşüğe</option>
+          </select>
+          <button type="button" class="btn btn-secondary btn-sm" id="filtreSifirlaBtn">Filtreyi Sıfırla</button>
+        </div>
+      </div>
+
+      <div id="urunListesi" class="grid-urunler"></div>
+      <div id="urunBulunamadi" class="card hidden" style="text-align: center; margin-top: 16px;">
+        Aramanızla eşleşen ürün bulunamadı.
+      </div>
+    </section>
+
+    <!-- 3. SEPET EKRANI -->
+    <section id="sepetBolumu" class="card hidden">
+      <div class="steps">
+        <span class="step-pill active">1. Sepet</span>
+        <span class="step-pill">2. Adres</span>
+        <span class="step-pill">3. Kart</span>
+        <span class="step-pill">4. 3D Onay</span>
+      </div>
+
+      <h2 style="margin-bottom: 12px;">Alışveriş Sepeti</h2>
+      <div id="sepetIcerik"></div>
+      <div id="sepetHata" class="alert alert-error hidden"></div>
+
+      <div class="kupon-kutu">
+        <input type="text" id="kuponInput" placeholder="İndirim kodu (örn: INDIRIM10)" />
+        <button type="button" class="btn btn-secondary" id="kuponUygulaBtn">Uygula</button>
+      </div>
+      <div id="kuponMesaj" class="alert hidden"></div>
+
+      <div class="ozet-alani">
+        <div>
+          <div style="font-size: 13px; color: var(--muted);">
+            Ara Toplam: <span id="araToplam">0</span> TL • İndirim: <span id="indirimTutari">0</span> TL • Kargo: <span id="kargoUcreti">0</span> TL (<span id="kargoDurumu">Ücretsiz</span>)
+          </div>
+          <div style="font-size: 20px; font-weight: 800; margin-top: 4px;">
+            Genel Toplam: <span id="genelToplam">0</span> TL
+          </div>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <button type="button" class="btn btn-secondary" id="urunlereDonBtn">Alışverişe Dön</button>
+          <button type="button" class="btn btn-primary" id="sepetOnaylaBtn">Sepeti Onayla</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. ADRES EKRANI -->
+    <section id="adresBolumu" class="card hidden">
+      <div class="steps">
+        <span class="step-pill done">1. Sepet</span>
+        <span class="step-pill active">2. Adres</span>
+        <span class="step-pill">3. Kart</span>
+        <span class="step-pill">4. 3D Onay</span>
+      </div>
+
+      <h2 style="margin-bottom: 14px;">Teslimat Adresi</h2>
+      <div class="form-group">
+        <label for="adresAdSoyad">Ad Soyad</label>
+        <input type="text" id="adresAdSoyad" placeholder="Adınız Soyadınız" />
+      </div>
+      <div class="form-group">
+        <label for="adresIl">İl / İlçe</label>
+        <input type="text" id="adresIl" placeholder="İstanbul / Kadıköy" />
+      </div>
+      <div class="form-group">
+        <label for="adresDetay">Açık Adres</label>
+        <textarea id="adresDetay" rows="3" placeholder="Mahalle, cadde, sokak, bina ve daire no"></textarea>
+      </div>
+
+      <div id="adresHata" class="alert alert-error hidden"></div>
+
+      <div style="display: flex; gap: 10px; margin-top: 14px;">
+        <button type="button" class="btn btn-secondary" id="adrestenSepeteDonBtn">Geri</button>
+        <button type="button" class="btn btn-primary" id="adresDevamBtn">Ödemeye Geç</button>
+      </div>
+    </section>
+
+    <!-- 5. KART BİLGİLERİ EKRANI -->
+    <section id="kartBolumu" class="card hidden">
+      <div class="steps">
+        <span class="step-pill done">1. Sepet</span>
+        <span class="step-pill done">2. Adres</span>
+        <span class="step-pill active">3. Kart</span>
+        <span class="step-pill">4. 3D Onay</span>
+      </div>
+
+      <h2 style="margin-bottom: 14px;">Kart Bilgileri</h2>
+      <div class="form-group">
+        <label for="kartNo">Kart Numarası</label>
+        <input type="text" id="kartNo" placeholder="4543 0000 0000 1234" />
+      </div>
+      <div class="row-2">
+        <div class="form-group">
+          <label for="kartSonKullanma">Son Kullanma (AA/YY)</label>
+          <input type="text" id="kartSonKullanma" placeholder="12/29" />
+        </div>
+        <div class="form-group">
+          <label for="kartCvv">CVV</label>
+          <input type="text" id="kartCvv" placeholder="123" />
+        </div>
+      </div>
+
+      <div id="kartHata" class="alert alert-error hidden"></div>
+
+      <div style="display: flex; gap: 10px; margin-top: 14px;">
+        <button type="button" class="btn btn-secondary" id="karttanAdreseDonBtn">Geri</button>
+        <button type="button" class="btn btn-primary" id="odeme3DBtn">3D Doğrulamaya İlerle</button>
+      </div>
+    </section>
+
+    <!-- 6. 3D DOĞRULAMA EKRANI -->
+    <section id="dogrulama3DBolumu" class="card hidden" style="max-width: 480px; margin: 0 auto;">
+      <div class="steps">
+        <span class="step-pill done">1. Sepet</span>
+        <span class="step-pill done">2. Adres</span>
+        <span class="step-pill done">3. Kart</span>
+        <span class="step-pill active">4. 3D Onay</span>
+      </div>
+
+      <h2 style="margin-bottom: 8px;">3D Secure Doğrulama</h2>
+      <p style="color: var(--muted); font-size: 14px; margin-bottom: 14px;">
+        Bankanız tarafından gönderilen 6 haneli doğrulama kodunu girin (Test kodu: <strong>123456</strong>).
+      </p>
+
+      <div class="form-group">
+        <label for="kod3D">Doğrulama Kodu</label>
+        <input type="text" id="kod3D" placeholder="123456" />
+      </div>
+
+      <button type="button" class="btn btn-success" id="siparisiTamamlaBtn" style="width: 100%;">
+        Siparişi Tamamla
+      </button>
+      <div id="hata3D" class="alert alert-error hidden"></div>
+    </section>
+
+    <!-- 7. SİPARİŞ ONAY EKRANI -->
+    <section id="siparisOnayBolumu" class="card hidden">
+      <div class="alert alert-success" style="margin-top: 0; margin-bottom: 16px;">
+        Siparişiniz başarıyla oluşturuldu!
+      </div>
+      <h2 style="margin-bottom: 10px;">Sipariş Özeti</h2>
+      <p id="siparisOzeti" style="font-size: 15px; margin-bottom: 18px;"></p>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <button type="button" class="btn btn-primary" id="yeniAlisverisBtn">Yeni Alışveriş Başlat</button>
+        <button type="button" class="btn btn-secondary" id="onaydanSiparislerimeGitBtn">Siparişlerimi Gör</button>
+      </div>
+    </section>
+
+    <!-- 8. SİPARİŞLERİM GEÇMİŞ EKRANI -->
+    <section id="siparislerBolumu" class="card hidden">
+      <div class="store-top" style="margin-bottom: 14px;">
+        <div>
+          <h2>Siparişlerim</h2>
+          <p style="color: var(--muted); font-size: 13px;">Tamamlanan sipariş kayıtlarınız bu alanda listelenir.</p>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm" id="siparislerdenMagazayaDonBtn">Mağazaya Dön</button>
+      </div>
+      <div id="siparisGecmisListesi"></div>
+    </section>
+  </main>
+
+  <div id="toastBildirim" class="toast hidden"></div>
+
+  <script>
+    const KARGO_ESIGI = 2000;
+    const KARGO_UCRETI = 99;
+    const DEPO_ANAHTARI = "novastore_siparisler_v1";
+
+    function svgDataUri(svgStr) {
+      return "data:image/svg+xml;utf8," + encodeURIComponent(svgStr);
+    }
+
+    const URUNLER = [
+      {
+        id: "kulaklik",
+        ad: "Kablosuz Kulaklık",
+        kategori: "Ses & Kulaklık",
+        fiyat: 1500,
+        aciklama: "Aktif gürültü engellemeli, 30 saat pil ömürlü kulaklık.",
+        gorselUrl: svgDataUri(`<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 64 64" fill="none"><path d="M14 34v-4a18 18 0 0 1 36 0v4" stroke="#ff6000" stroke-width="4" stroke-linecap="round"/><rect x="10" y="32" width="10" height="18" rx="4" fill="#1e293b"/><rect x="44" y="32" width="10" height="18" rx="4" fill="#1e293b"/></svg>`)
+      },
+      {
+        id: "mouse",
+        ad: "Kablosuz Mouse",
+        kategori: "Çevre Birimleri",
+        fiyat: 800,
+        aciklama: "Ergonomik tasarım, sessiz tıklama ve hassas optik sensör.",
+        gorselUrl: svgDataUri(`<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 64 64" fill="none"><rect x="20" y="10" width="24" height="44" rx="12" stroke="#1e293b" stroke-width="4" fill="#ffffff"/><line x1="32" y1="10" x2="32" y2="26" stroke="#ff6000" stroke-width="3.5" stroke-linecap="round"/></svg>`)
+      },
+      {
+        id: "klavye",
+        ad: "Mekanik Klavye",
+        kategori: "Çevre Birimleri",
+        fiyat: 2200,
+        aciklama: "Kompakt düzen, dokunsal anahtarlar ve ayarlanabilir arka aydınlatma.",
+        gorselUrl: svgDataUri(`<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 64 64" fill="none"><rect x="8" y="18" width="48" height="28" rx="5" fill="#1e293b"/><circle cx="18" cy="28" r="2.5" fill="#ffffff"/><circle cx="27" cy="28" r="2.5" fill="#ffffff"/><circle cx="36" cy="28" r="2.5" fill="#ffffff"/><circle cx="45" cy="28" r="2.5" fill="#ff6000"/><rect x="20" y="35" width="24" height="4" rx="2" fill="#cbd5e1"/></svg>`)
+      },
+      {
+        id: "stand",
+        ad: "Alüminyum Laptop Standı",
+        kategori: "Ofis & Masa",
+        fiyat: 950,
+        aciklama: "Yerden tasarruf sağlayan, hava akışını artıran yükseltici stand.",
+        gorselUrl: svgDataUri(`<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 64 64" fill="none"><path d="M12 22h40l-8 18H20l-8-18Z" stroke="#1e293b" stroke-width="3.5" fill="#ffffff"/><path d="M22 40v8M42 40v8M16 48h32" stroke="#ff6000" stroke-width="3.5" stroke-linecap="round"/></svg>`)
+      },
+      {
+        id: "hub",
+        ad: "USB-C Çoklayıcı Hub",
+        kategori: "Aksesuar",
+        fiyat: 650,
+        aciklama: "4K HDMI, USB 3.0 ve hızlı şarj destekli taşınabilir adaptör.",
+        gorselUrl: svgDataUri(`<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 64 64" fill="none"><rect x="16" y="24" width="32" height="16" rx="4" fill="#1e293b"/><rect x="24" y="29" width="6" height="6" rx="1" fill="#ff6000"/><rect x="34" y="29" width="6" height="6" rx="1" fill="#cbd5e1"/><path d="M32 12v12" stroke="#1e293b" stroke-width="3.5" stroke-linecap="round"/></svg>`)
+      }
+    ];
+
+    let aktifKullanici = null;
+    let aktifKategori = "Tümü";
+    let aramaMetni = "";
+    let siralamaTuru = "varsayilan";
+    let sepet = []; // { urun, adet }
+    let indirimOrani = 0;
+    let teslimatAdresi = {};
+    let hatali3DDeneme = 0;
+    let toastZamanlayici = null;
+
+    const bolumler = [
+      "loginBolumu", "magazaBolumu", "sepetBolumu",
+      "adresBolumu", "kartBolumu", "dogrulama3DBolumu",
+      "siparisOnayBolumu", "siparislerBolumu"
+    ];
+
+    function siparisleriOku() {
+      try {
+        const ham = localStorage.getItem(DEPO_ANAHTARI);
+        const liste = ham ? JSON.parse(ham) : [];
+        return Array.isArray(liste) ? liste : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function siparisleriYaz(liste) {
+      try {
+        localStorage.setItem(DEPO_ANAHTARI, JSON.stringify(liste));
+      } catch (e) {
+        // Depolama erişimi kısıtlıysa sessiz geç
+      }
+      siparisSayaciGuncelle();
+    }
+
+    function siparisSayaciGuncelle() {
+      const sayi = siparisleriOku().length;
+      document.getElementById("siparisSayaci").textContent = String(sayi);
+    }
+
+    function toastGoster(mesaj) {
+      const toastEl = document.getElementById("toastBildirim");
+      toastEl.textContent = mesaj;
+      toastEl.classList.remove("hidden");
+      if (toastZamanlayici) clearTimeout(toastZamanlayici);
+      toastZamanlayici = setTimeout(() => {
+        toastEl.classList.add("hidden");
+      }, 1800);
+    }
+
+    function bolumGoster(id) {
+      bolumler.forEach(b => document.getElementById(b).classList.add("hidden"));
+      document.getElementById(id).classList.remove("hidden");
+    }
+
+    function mesajGoster(elId, metin, tip = "error") {
+      const el = document.getElementById(elId);
+      el.textContent = metin;
+      el.className = `alert ${tip === "success" ? "alert-success" : "alert-error"}`;
+      el.classList.remove("hidden");
+    }
+
+    function mesajGizle(elId) {
+      const el = document.getElementById(elId);
+      el.classList.add("hidden");
+      el.textContent = "";
+    }
+
+    function sepetSayaciGuncelle() {
+      const toplamAdet = sepet.reduce((acc, item) => acc + item.adet, 0);
+      document.getElementById("sepetSayaci").textContent = String(toplamAdet);
+    }
+
+    function tutarlariHesapla() {
+      const araToplam = sepet.reduce((acc, item) => acc + item.urun.fiyat * item.adet, 0);
+      const indirim = Math.round(araToplam * indirimOrani);
+      const indirimliAraToplam = Math.max(0, araToplam - indirim);
+      const kargo = sepet.length === 0 || indirimliAraToplam >= KARGO_ESIGI ? 0 : KARGO_UCRETI;
+      const genelToplam = indirimliAraToplam + kargo;
+
+      document.getElementById("araToplam").textContent = String(araToplam);
+      document.getElementById("indirimTutari").textContent = String(indirim);
+      document.getElementById("kargoUcreti").textContent = String(kargo);
+      document.getElementById("kargoDurumu").textContent = kargo === 0 ? "Ücretsiz" : "Standart Kargo";
+      document.getElementById("genelToplam").textContent = String(genelToplam);
+      return { araToplam, indirim, kargo, genelToplam };
+    }
+
+    function urunleriRenderEt() {
+      const listeEl = document.getElementById("urunListesi");
+      const bosEl = document.getElementById("urunBulunamadi");
+      document.getElementById("filtreBilgisi").textContent =
+        `Kategori: ${aktifKategori}${aramaMetni ? ` • Arama: "${aramaMetni}"` : ""}`;
+
+      let filtrelenmis = URUNLER.filter(u => {
+        const kategoriUygun = aktifKategori === "Tümü" || u.kategori === aktifKategori;
+        const aramaUygun = !aramaMetni ||
+          u.ad.toLowerCase().includes(aramaMetni.toLowerCase()) ||
+          u.kategori.toLowerCase().includes(aramaMetni.toLowerCase());
+        return kategoriUygun && aramaUygun;
+      });
+
+      if (siralamaTuru === "fiyat-artan") {
+        filtrelenmis = [...filtrelenmis].sort((a, b) => a.fiyat - b.fiyat);
+      } else if (siralamaTuru === "fiyat-azalan") {
+        filtrelenmis = [...filtrelenmis].sort((a, b) => b.fiyat - a.fiyat);
+      }
+
+      listeEl.innerHTML = "";
+      if (filtrelenmis.length === 0) {
+        bosEl.classList.remove("hidden");
+        return;
+      }
+      bosEl.classList.add("hidden");
+
+      filtrelenmis.forEach(urun => {
+        const kart = document.createElement("div");
+        kart.className = "urun-kart";
+        kart.dataset.testid = `urun-${urun.id}`;
+        kart.innerHTML = `
+          <div>
+            <div class="urun-gorsel">
+              <img src="${urun.gorselUrl}" alt="${urun.ad}" />
+            </div>
+            <div class="urun-govde">
+              <div class="urun-kategori">${urun.kategori}</div>
+              <div class="urun-baslik">${urun.ad}</div>
+              <p class="urun-aciklama">${urun.aciklama}</p>
+            </div>
+          </div>
+          <div class="urun-alt">
+            <span class="fiyat">${urun.fiyat} TL</span>
+            <button type="button" class="btn btn-primary btn-sm sepete-ekle" data-ad="${urun.ad}">
+              Sepete Ekle
+            </button>
+          </div>
+        `;
+        kart.querySelector(".sepete-ekle").addEventListener("click", () => sepeteEkle(urun));
+        listeEl.appendChild(kart);
+      });
+    }
+
+    function sepeteEkle(urun) {
+      if (!aktifKullanici) {
+        bolumGoster("loginBolumu");
+        mesajGoster("loginMesaj", "Sepete ürün eklemek için önce giriş yapın.");
+        return;
+      }
+      const mevcut = sepet.find(item => item.urun.id === urun.id);
+      if (mevcut) {
+        mevcut.adet += 1;
+      } else {
+        sepet.push({ urun, adet: 1 });
+      }
+      sepetSayaciGuncelle();
+      toastGoster(`${urun.ad} sepete eklendi.`);
+    }
+
+    function sepetiRenderEt() {
+      const icerikEl = document.getElementById("sepetIcerik");
+      mesajGizle("sepetHata");
+
+      if (sepet.length === 0) {
+        icerikEl.innerHTML = `<p style="color: var(--muted); padding: 12px 0;">Sepetiniz şu an boş.</p>`;
+        tutarlariHesapla();
+        return;
+      }
+
+      icerikEl.innerHTML = "";
+      sepet.forEach(item => {
+        const satir = document.createElement("div");
+        satir.className = "sepet-satir";
+        satir.innerHTML = `
+          <div class="sepet-urun-sol">
+            <img src="${item.urun.gorselUrl}" alt="${item.urun.ad}" class="sepet-mini-img" />
+            <div>
+              <strong>${item.urun.ad}</strong>
+              <div style="font-size: 13px; color: var(--muted);">Birim Fiyat: ${item.urun.fiyat} TL</div>
+            </div>
+          </div>
+          <div class="adet-kontrol">
+            <button type="button" class="btn btn-secondary btn-sm adet-azalt">-</button>
+            <span class="adet-deger">${item.adet}</span>
+            <button type="button" class="btn btn-secondary btn-sm adet-artir">+</button>
+            <button type="button" class="btn btn-danger btn-sm urun-sil">Sil</button>
+          </div>
+        `;
+
+        satir.querySelector(".adet-azalt").addEventListener("click", () => {
+          if (item.adet > 1) {
+            item.adet -= 1;
+          } else {
+            sepet = sepet.filter(x => x.urun.id !== item.urun.id);
+          }
+          sepetSayaciGuncelle();
+          sepetiRenderEt();
+        });
+
+        satir.querySelector(".adet-artir").addEventListener("click", () => {
+          item.adet += 1;
+          sepetSayaciGuncelle();
+          sepetiRenderEt();
+        });
+
+        satir.querySelector(".urun-sil").addEventListener("click", () => {
+          sepet = sepet.filter(x => x.urun.id !== item.urun.id);
+          sepetSayaciGuncelle();
+          sepetiRenderEt();
+        });
+
+        icerikEl.appendChild(satir);
+      });
+
+      tutarlariHesapla();
+    }
+
+    function siparisGecmisiniRenderEt() {
+      const listeEl = document.getElementById("siparisGecmisListesi");
+      const siparisler = siparisleriOku();
+      if (siparisler.length === 0) {
+        listeEl.innerHTML = `<p style="color: var(--muted); padding: 12px 0;">Henüz tamamlanmış bir siparişiniz bulunmuyor.</p>`;
+        return;
+      }
+
+      listeEl.innerHTML = siparisler.map(s => `
+        <div class="siparis-kart" data-siparis-no="${s.no}">
+          <div class="siparis-ust">
+            <strong>Sipariş No: ${s.no}</strong>
+            <span class="rozet-basarili">Onaylandı • ${s.tarih}</span>
+          </div>
+          <div style="font-size: 14px; margin-bottom: 4px;">
+            <strong>Alıcı:</strong> ${s.alici} (${s.bolge}) • <strong>Tutar:</strong> ${s.tutar} TL
+          </div>
+          <div style="font-size: 13px; color: var(--muted);">
+            <strong>Ürünler:</strong> ${s.urunler}
+          </div>
+        </div>
+      `).join("");
+    }
+
+    // Giriş işlemleri
+    document.getElementById("loginBtn").addEventListener("click", () => {
+      const k = document.getElementById("username").value.trim();
+      const s = document.getElementById("password").value.trim();
+      mesajGizle("loginMesaj");
+
+      if (k === "demo_kullanici" && s === "Test1234!") {
+        aktifKullanici = k;
+        document.getElementById("aktifKullaniciBar").textContent = `Giriş Yapıldı: ${k}`;
+        document.getElementById("hosgeldinMesaji").textContent = `Hoş geldiniz, ${k}!`;
+        document.getElementById("cikisBtn").classList.remove("hidden");
+        document.getElementById("siparislerimBtn").classList.remove("hidden");
+        siparisSayaciGuncelle();
+        urunleriRenderEt();
+        bolumGoster("magazaBolumu");
+      } else {
+        mesajGoster("loginMesaj", "Hatalı kullanıcı adı veya şifre!");
+      }
+    });
+
+    document.getElementById("cikisBtn").addEventListener("click", () => {
+      aktifKullanici = null;
+      sepet = [];
+      indirimOrani = 0;
+      sepetSayaciGuncelle();
+      document.getElementById("aktifKullaniciBar").textContent = "Misafir Kullanıcı";
+      document.getElementById("cikisBtn").classList.add("hidden");
+      document.getElementById("siparislerimBtn").classList.add("hidden");
+      document.getElementById("username").value = "";
+      document.getElementById("password").value = "";
+      bolumGoster("loginBolumu");
+    });
+
+    // Siparişlerim navigasyonu
+    document.getElementById("siparislerimBtn").addEventListener("click", () => {
+      if (!aktifKullanici) {
+        bolumGoster("loginBolumu");
+        mesajGoster("loginMesaj", "Sipariş geçmişini görmek için giriş yapın.");
+        return;
+      }
+      siparisGecmisiniRenderEt();
+      bolumGoster("siparislerBolumu");
+    });
+
+    document.getElementById("onaydanSiparislerimeGitBtn").addEventListener("click", () => {
+      siparisGecmisiniRenderEt();
+      bolumGoster("siparislerBolumu");
+    });
+
+    document.getElementById("siparislerdenMagazayaDonBtn").addEventListener("click", () => {
+      urunleriRenderEt();
+      bolumGoster("magazaBolumu");
+    });
+
+    // Menü kategori ve arama
+    document.querySelectorAll(".nav-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        aktifKategori = btn.dataset.kategori;
+        if (aktifKullanici) {
+          urunleriRenderEt();
+          bolumGoster("magazaBolumu");
+        } else {
+          bolumGoster("loginBolumu");
+          mesajGoster("loginMesaj", "Ürünleri görüntülemek için giriş yapın.");
+        }
+      });
+    });
+
+    document.getElementById("aramaBtn").addEventListener("click", () => {
+      aramaMetni = document.getElementById("aramaInput").value.trim();
+      if (aktifKullanici) {
+        urunleriRenderEt();
+        bolumGoster("magazaBolumu");
+      } else {
+        bolumGoster("loginBolumu");
+        mesajGoster("loginMesaj", "Arama yapmak için önce giriş yapın.");
+      }
+    });
+
+    document.getElementById("siralamaSelect").addEventListener("change", e => {
+      siralamaTuru = e.target.value;
+      urunleriRenderEt();
+    });
+
+    document.getElementById("filtreSifirlaBtn").addEventListener("click", () => {
+      aktifKategori = "Tümü";
+      aramaMetni = "";
+      siralamaTuru = "varsayilan";
+      document.getElementById("aramaInput").value = "";
+      document.getElementById("siralamaSelect").value = "varsayilan";
+      document.querySelectorAll(".nav-btn").forEach(b => {
+        b.classList.toggle("active", b.dataset.kategori === "Tümü");
+      });
+      urunleriRenderEt();
+    });
+
+    document.getElementById("anaSayfaLogo").addEventListener("click", e => {
+      e.preventDefault();
+      if (aktifKullanici) {
+        bolumGoster("magazaBolumu");
+      } else {
+        bolumGoster("loginBolumu");
+      }
+    });
+
+    // Sepet ve Kupon
+    document.getElementById("sepetGitBtn").addEventListener("click", () => {
+      if (!aktifKullanici) {
+        bolumGoster("loginBolumu");
+        mesajGoster("loginMesaj", "Sepeti görmek için giriş yapın.");
+        return;
+      }
+      sepetiRenderEt();
+      bolumGoster("sepetBolumu");
+    });
+
+    document.getElementById("urunlereDonBtn").addEventListener("click", () => {
+      urunleriRenderEt();
+      bolumGoster("magazaBolumu");
+    });
+
+    document.getElementById("kuponUygulaBtn").addEventListener("click", () => {
+      const kod = document.getElementById("kuponInput").value.trim().toUpperCase();
+      if (kod === "INDIRIM10") {
+        indirimOrani = 0.10;
+        tutarlariHesapla();
+        mesajGoster("kuponMesaj", "%10 indirim kodu uygulandı!", "success");
+      } else {
+        indirimOrani = 0;
+        tutarlariHesapla();
+        mesajGoster("kuponMesaj", "Geçersiz indirim kodu!");
+      }
+    });
+
+    document.getElementById("sepetOnaylaBtn").addEventListener("click", () => {
+      if (sepet.length === 0) {
+        mesajGoster("sepetHata", "Sepet boşken onaylanamaz!");
+        return;
+      }
+      mesajGizle("sepetHata");
+      bolumGoster("adresBolumu");
+    });
+
+    // Adres
+    document.getElementById("adrestenSepeteDonBtn").addEventListener("click", () => {
+      sepetiRenderEt();
+      bolumGoster("sepetBolumu");
+    });
+
+    document.getElementById("adresDevamBtn").addEventListener("click", () => {
+      const adSoyad = document.getElementById("adresAdSoyad").value.trim();
+      const il = document.getElementById("adresIl").value.trim();
+      const detay = document.getElementById("adresDetay").value.trim();
+      mesajGizle("adresHata");
+
+      if (!adSoyad || !il || !detay) {
+        mesajGoster("adresHata", "Tüm adres alanlarını doldurun!");
+        return;
+      }
+      teslimatAdresi = { adSoyad, il, detay };
+      bolumGoster("kartBolumu");
+    });
+
+    // Kart
+    document.getElementById("karttanAdreseDonBtn").addEventListener("click", () => {
+      bolumGoster("adresBolumu");
+    });
+
+    document.getElementById("odeme3DBtn").addEventListener("click", () => {
+      const kartNo = document.getElementById("kartNo").value.trim();
+      const skt = document.getElementById("kartSonKullanma").value.trim();
+      const cvv = document.getElementById("kartCvv").value.trim();
+      mesajGizle("kartHata");
+
+      if (!kartNo || !skt || !cvv) {
+        mesajGoster("kartHata", "Kart bilgilerini eksiksiz girin!");
+        return;
+      }
+      const sadeceRakamKart = kartNo.replace(/\s+/g, "");
+      if (!/^\d{12,19}$/.test(sadeceRakamKart)) {
+        mesajGoster("kartHata", "Geçerli bir kart numarası girin!");
+        return;
+      }
+      if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(skt)) {
+        mesajGoster("kartHata", "Son kullanma tarihini AA/YY formatında girin!");
+        return;
+      }
+      if (!/^\d{3,4}$/.test(cvv)) {
+        mesajGoster("kartHata", "CVV kodu 3 veya 4 haneli olmalıdır!");
+        return;
+      }
+
+      hatali3DDeneme = 0;
+      mesajGizle("hata3D");
+      document.getElementById("kod3D").value = "";
+      document.getElementById("siparisiTamamlaBtn").disabled = false;
+      bolumGoster("dogrulama3DBolumu");
+    });
+
+    // 3D Doğrulama ve Sipariş Özeti
+    document.getElementById("siparisiTamamlaBtn").addEventListener("click", () => {
+      const girilenKod = document.getElementById("kod3D").value.trim();
+      if (girilenKod !== "123456") {
+        hatali3DDeneme += 1;
+        if (hatali3DDeneme >= 3) {
+          document.getElementById("siparisiTamamlaBtn").disabled = true;
+          mesajGoster("hata3D", "3D doğrulama kodu hatalı! (Deneme hakkınız doldu)");
+        } else {
+          mesajGoster("hata3D", "3D doğrulama kodu hatalı!");
+        }
+        return;
+      }
+
+      const { genelToplam } = tutarlariHesapla();
+      const urunOzeti = sepet.map(i => `${i.urun.ad} (x${i.adet})`).join(", ");
+      const siparisNo = "NV-" + String(Date.now()).slice(-6);
+      const tarihStr = new Date().toLocaleDateString("tr-TR");
+
+      document.getElementById("siparisOzeti").textContent =
+        `Sipariş No: ${siparisNo} | Alıcı: ${teslimatAdresi.adSoyad} | Bölge: ${teslimatAdresi.il} | Ürünler: ${urunOzeti} | Ödenen Tutar: ${genelToplam} TL`;
+
+      const mevcutSiparisler = siparisleriOku();
+      mevcutSiparisler.unshift({
+        no: siparisNo,
+        tarih: tarihStr,
+        alici: teslimatAdresi.adSoyad,
+        bolge: teslimatAdresi.il,
+        urunler: urunOzeti,
+        tutar: genelToplam
+      });
+      siparisleriYaz(mevcutSiparisler);
+
+      sepet = [];
+      indirimOrani = 0;
+      sepetSayaciGuncelle();
+      bolumGoster("siparisOnayBolumu");
+    });
+
+    document.getElementById("yeniAlisverisBtn").addEventListener("click", () => {
+      urunleriRenderEt();
+      bolumGoster("magazaBolumu");
+    });
+
+    siparisSayaciGuncelle();
+  </script>
+</body>
+</html>
+
